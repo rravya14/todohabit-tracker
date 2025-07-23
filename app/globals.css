@@ -5,47 +5,49 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 224 71.4% 4.1%;
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
-    --primary: 262.1 83.3% 57.8%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 262 80% 50%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 262 80% 96%;
+    --accent-foreground: 222 47% 11%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 262.1 83.3% 57.8%;
-    --radius: 0.5rem;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 262 80% 50%;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 210 20% 98%;
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 263.4 70% 50.4%;
-    --primary-foreground: 210 20% 98%;
+    /* Contemporary dark theme with enhanced readability */
+    --background: 224 71% 4%;
+    --foreground: 210 40% 98%;
+    --card: 220 13% 18%;
+    --card-foreground: 210 40% 98%;
+    --popover: 220 13% 18%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 263 70% 50%;
+    --primary-foreground: 210 40% 98%;
     --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
+    --secondary-foreground: 210 40% 98%;
     --muted: 215 27.9% 16.9%;
     --muted-foreground: 217.9 10.6% 64.9%;
     --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 20% 98%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive-foreground: 210 40% 98%;
     --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
-    --ring: 263.4 70% 50.4%;
+    --ring: 263 70% 50%;
+    --radius: 0.75rem;
   }
 }
 
@@ -58,33 +60,441 @@
   }
 }
 
-/* Improved dark mode styles */
-.dark .shadow-md {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
-}
-
-.dark .from-violet-50 {
-  --tw-gradient-from: rgb(25, 15, 41);
-  --tw-gradient-to: rgb(17, 24, 39);
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-}
-
-/* Prevent flash of unstyled content during theme change */
-html.dark {
+/* Contemporary dark mode styles with enhanced aesthetics */
+.dark {
   color-scheme: dark;
 }
 
-/* Improved focus styles for dark mode */
+/* Enhanced shadow system for dark mode with contemporary depth */
+.dark .shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.dark .shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px -1px rgba(0, 0, 0, 0.5);
+}
+
+.dark .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+}
+
+.dark .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+}
+
+/* Contemporary gradient backgrounds for dark mode */
+.dark .from-violet-50 {
+  --tw-gradient-from: rgb(15, 23, 42);
+  --tw-gradient-to: rgb(30, 41, 59);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.dark .bg-gradient-to-b.from-violet-50.to-white {
+  --tw-gradient-from: rgb(15, 23, 42);
+  --tw-gradient-to: rgb(30, 41, 59);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+/* Enhanced focus styles with contemporary colors */
 .dark *:focus-visible {
   outline-color: rgb(139, 92, 246);
+  outline-width: 2px;
+  outline-offset: 2px;
 }
 
 /* Smooth transitions for theme changes */
 body {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+* {
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color
+    0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced input styling for dark mode */
 .dark input::placeholder,
 .dark textarea::placeholder {
-  color: rgba(156, 163, 175, 0.8);
+  color: hsl(217.9 10.6% 64.9%);
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  color-scheme: dark;
+  background-color: hsl(var(--background));
+  border-color: hsl(var(--border));
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+
+/* Contemporary dialog and popover styling with rounded corners */
+.dark [role="dialog"],
+.dark [role="tooltip"],
+.dark [role="menu"] {
+  background-color: hsl(var(--popover));
+  border-color: hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+}
+
+/* Enhanced card styling with contemporary aesthetics and rounded corners */
+.dark .card,
+.dark [class*="card-"] {
+  background-color: hsl(var(--card));
+  border-color: hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Contemporary button styling with enhanced hover effects */
+.dark button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.dark button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.3);
+}
+
+.dark button:active {
+  transform: translateY(0);
+}
+
+/* Modern scrollbar design */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(217.9 10.6% 64.9% / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(217.9 10.6% 64.9% / 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(217.9 10.6% 64.9% / 0.4);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(217.9 10.6% 64.9% / 0.6);
+}
+
+/* Contemporary selection styling */
+::selection {
+  background-color: hsl(var(--primary) / 0.2);
+}
+
+.dark ::selection {
+  background-color: hsl(var(--primary) / 0.3);
+}
+
+/* Enhanced avatar styling with rounded corners */
+.dark .avatar img {
+  border-color: hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: 0 0 0 2px hsl(var(--background));
+}
+
+/* Contemporary gradient buttons with enhanced styling */
+.dark .bg-gradient-to-r.from-violet-600.to-fuchsia-500 {
+  --tw-gradient-from: rgb(139, 92, 246);
+  --tw-gradient-to: rgb(217, 70, 239);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.dark .hover\:from-violet-700.hover\:to-fuchsia-600:hover {
+  --tw-gradient-from: rgb(124, 58, 237);
+  --tw-gradient-to: rgb(192, 38, 211);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+/* Enhanced text contrast for better readability */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.dark p,
+.dark span,
+.dark div {
+  color: hsl(var(--foreground));
+}
+
+.dark .text-muted-foreground {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Contemporary loading states */
+.dark .animate-pulse {
+  background-color: hsl(var(--muted));
+}
+
+/* Enhanced border styling with rounded corners */
+.dark .border {
+  border-color: hsl(var(--border));
+}
+
+.dark .border-t,
+.dark .border-b,
+.dark .border-l,
+.dark .border-r {
+  border-color: hsl(var(--border));
+}
+
+/* Contemporary hover states */
+.dark .hover\:bg-accent:hover {
+  background-color: hsl(var(--accent));
+}
+
+.dark .hover\:text-accent-foreground:hover {
+  color: hsl(var(--accent-foreground));
+}
+
+/* Enhanced disabled states */
+.dark .disabled\:opacity-50:disabled,
+.dark [disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Contemporary ring focus styles */
+.dark .focus\:ring-2:focus {
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+
+.dark .focus\:ring-offset-2:focus {
+  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring) / 0.2);
+}
+
+/* Enhanced tab styling for dark mode */
+.dark .bg-violet-100 {
+  background-color: hsl(215 27.9% 16.9%);
+}
+
+.dark .bg-violet-900 {
+  background-color: hsl(215 27.9% 16.9%);
+}
+
+.dark .data-\[state\=active\]\:bg-white[data-state="active"] {
+  background-color: hsl(var(--card));
+}
+
+.dark .data-\[state\=active\]\:bg-gray-800[data-state="active"] {
+  background-color: hsl(var(--card));
+}
+
+/* Enhanced badge styling for dark mode */
+.dark .bg-violet-50 {
+  background-color: hsl(215 27.9% 16.9%);
+}
+
+.dark .text-violet-700 {
+  color: hsl(263 70% 70%);
+}
+
+.dark .border-violet-200 {
+  border-color: hsl(var(--border));
+}
+
+.dark .bg-violet-100 {
+  background-color: hsl(215 27.9% 16.9%);
+}
+
+.dark .text-violet-800 {
+  color: hsl(263 70% 80%);
+}
+
+/* Enhanced category colors for dark mode */
+.dark .bg-blue-100 {
+  background-color: hsl(217 91% 20%);
+}
+
+.dark .text-blue-800 {
+  color: hsl(217 91% 80%);
+}
+
+.dark .bg-emerald-100 {
+  background-color: hsl(151 55% 20%);
+}
+
+.dark .text-emerald-800 {
+  color: hsl(151 55% 80%);
+}
+
+.dark .bg-amber-100 {
+  background-color: hsl(43 96% 20%);
+}
+
+.dark .text-amber-800 {
+  color: hsl(43 96% 80%);
+}
+
+.dark .bg-gray-100 {
+  background-color: hsl(var(--muted));
+}
+
+.dark .text-gray-800 {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Enhanced achievement styling for dark mode */
+.dark .from-amber-50 {
+  --tw-gradient-from: hsl(43 96% 15%);
+}
+
+.dark .to-yellow-50 {
+  --tw-gradient-to: hsl(54 91% 15%);
+}
+
+.dark .border-amber-200 {
+  border-color: hsl(43 96% 25%);
+}
+
+.dark .text-amber-700 {
+  color: hsl(43 96% 70%);
+}
+
+.dark .text-amber-800 {
+  color: hsl(43 96% 80%);
+}
+
+.dark .bg-amber-100 {
+  background-color: hsl(43 96% 20%);
+}
+
+.dark .text-amber-500 {
+  color: hsl(43 96% 60%);
+}
+
+/* Enhanced progress bar styling for dark mode */
+.dark .bg-orange-100 {
+  background-color: hsl(24 100% 20%);
+}
+
+.dark .bg-orange-50 {
+  background-color: hsl(24 100% 15%);
+}
+
+.dark .text-orange-500 {
+  color: hsl(24 100% 60%);
+}
+
+.dark .text-orange-700 {
+  color: hsl(24 100% 70%);
+}
+
+/* Enhanced empty state styling */
+.dark .bg-white {
+  background-color: hsl(var(--card));
+}
+
+.dark .border-violet-100 {
+  border-color: hsl(var(--border));
+}
+
+.dark .text-gray-500 {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Enhanced form styling for dark mode */
+.dark .focus\:border-violet-400:focus {
+  border-color: hsl(var(--ring));
+}
+
+.dark .focus\:ring-violet-400:focus {
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+
+.dark .text-violet-400 {
+  color: hsl(263 70% 60%);
+}
+
+.dark .text-violet-500 {
+  color: hsl(263 70% 65%);
+}
+
+.dark .text-violet-900 {
+  color: hsl(var(--foreground));
+}
+
+/* Enhanced hover states for buttons */
+.dark .hover\:bg-violet-50:hover {
+  background-color: hsl(var(--accent));
+}
+
+.dark .hover\:bg-violet-700:hover {
+  background-color: hsl(263 70% 45%);
+}
+
+.dark .bg-violet-600 {
+  background-color: hsl(263 70% 50%);
+}
+
+/* Enhanced ghost button styling */
+.dark .hover\:bg-red-50:hover {
+  background-color: hsl(0 84% 15%);
+}
+
+.dark .hover\:text-red-700:hover {
+  color: hsl(0 84% 70%);
+}
+
+.dark .text-red-500 {
+  color: hsl(0 84% 60%);
+}
+
+.dark .hover\:text-violet-700:hover {
+  color: hsl(263 70% 70%);
+}
+
+/* Enhanced completed todo styling */
+.dark .bg-gray-50 {
+  background-color: hsl(var(--muted));
+}
+
+.dark .text-gray-500 {
+  color: hsl(var(--muted-foreground));
+}
+
+.dark .text-gray-800 {
+  color: hsl(var(--foreground));
+}
+
+/* Enhanced reminder styling */
+.dark .text-violet-400 {
+  color: hsl(263 70% 60%);
+}
+
+/* Enhanced checkbox styling */
+.dark .border-violet-300 {
+  border-color: hsl(var(--border));
+}
+
+.dark .data-\[state\=checked\]\:bg-violet-600[data-state="checked"] {
+  background-color: hsl(var(--primary));
+}
+
+.dark .data-\[state\=checked\]\:border-violet-600[data-state="checked"] {
+  border-color: hsl(var(--primary));
 }

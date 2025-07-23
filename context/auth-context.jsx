@@ -1,9 +1,7 @@
 "use client"
 
-import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
 import {
-  type User,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -17,30 +15,11 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider,
 } from "firebase/auth"
-import { auth, storage } from "@/lib/firebase"
+import { auth } from "@/lib/firebase"
 import { useRouter } from "next/navigation"
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage"
 import { createUserDocument, getUserData, updateUserProfile } from "@/lib/firestore"
-import type { UserData } from "@/lib/firestore"
 
-interface AuthContextType {
-  currentUser: User | null
-  userData: UserData | null
-  loading: boolean
-  firestoreError: string | null
-  signup: (email: string, password: string) => Promise<void>
-  login: (email: string, password: string) => Promise<void>
-  logout: () => Promise<void>
-  googleSignIn: () => Promise<void>
-  resetPassword: (email: string) => Promise<void>
-  updateUserProfileData: (displayName?: string, photoFile?: File) => Promise<void>
-  updateUserEmail: (email: string, password: string) => Promise<void>
-  updateUserPassword: (currentPassword: string, newPassword: string) => Promise<void>
-  reAuthenticate: (password: string) => Promise<boolean>
-  refreshUserData: () => Promise<void>
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext(undefined)
 
 export function useAuth() {
   const context = useContext(AuthContext)
@@ -50,15 +29,15 @@ export function useAuth() {
   return context
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [userData, setUserData] = useState<UserData | null>(null)
+export function AuthProvider({ children }) {
+  const [currentUser, setCurrentUser] = useState(null)
+  const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [firestoreError, setFirestoreError] = useState<string | null>(null)
+  const [firestoreError, setFirestoreError] = useState(null)
   const router = useRouter()
 
   // Fetch user data from Firestore
-  const fetchUserData = async (user: User) => {
+  const fetchUserData = async (user) => {
     try {
       setFirestoreError(null)
       let data = await getUserData(user.uid)
@@ -69,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       setUserData(data)
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching user data:", error)
 
       // Handle Firestore permission errors
@@ -86,15 +65,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   // Create fallback user data from localStorage if Firestore fails
-  const createFallbackUserData = (user: User): UserData => {
+  const createFallbackUserData = (user) => {
     // Try to get data from localStorage
     const todosKey = `todos_${user.uid}`
     const habitsKey = `habits_${user.uid}`
     const themeKey = "theme"
+    const notificationsKey = `notifications_${user.uid}`
+    const privacyKey = `privacy_${user.uid}`
+    const calendarSyncKey = `calendar_sync_${user.uid}`
 
     let todos = []
     let habits = []
-    let theme: "light" | "dark" | "system" = "system"
+    let theme = "system"
+    let notificationPreferences = {
+      email: true,
+      push: true,
+      reminders: true,
+      marketing: false,
+    }
+    let privacySettings = {
+      profileVisibility: "public",
+      shareActivity: true,
+      dataCollection: true,
+    }
+    let calendarSync = {
+      enabled: false,
+      lastSynced: null,
+      syncTodos: true,
+      syncHabits: true,
+    }
 
     try {
       const savedTodos = localStorage.getItem(todosKey)
@@ -107,9 +106,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         habits = JSON.parse(savedHabits)
       }
 
-      const savedTheme = localStorage.getItem(themeKey) as "light" | "dark" | "system" | null
+      const savedTheme = localStorage.getItem(themeKey)
       if (savedTheme) {
         theme = savedTheme
+      }
+
+      const savedNotifications = localStorage.getItem(notificationsKey)
+      if (savedNotifications) {
+        notificationPreferences = JSON.parse(savedNotifications)
+      }
+
+      const savedPrivacy = localStorage.getItem(privacyKey)
+      if (savedPrivacy) {
+        privacySettings = JSON.parse(savedPrivacy)
+      }
+
+      const savedCalendarSync = localStorage.getItem(calendarSyncKey)
+      if (savedCalendarSync) {
+        calendarSync = JSON.parse(savedCalendarSync)
       }
     } catch (e) {
       console.error("Error reading from localStorage:", e)
@@ -125,6 +139,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       settings: {
         theme,
       },
+      notificationPreferences,
+      privacySettings,
+      calendarSync,
       createdAt: new Date().toISOString(),
       lastLogin: new Date().toISOString(),
     }
@@ -137,7 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function signup(email: string, password: string) {
+  async function signup(email, password) {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password)
 
@@ -157,7 +174,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function login(email: string, password: string) {
+  async function login(email, password) {
     try {
       await signInWithEmailAndPassword(auth, email, password)
       router.push("/")
@@ -198,11 +215,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  function resetPassword(email: string) {
+  function resetPassword(email) {
     return sendPasswordResetEmail(auth, email)
   }
 
-  async function updateUserProfileData(displayName?: string, photoFile?: File) {
+  async function updateUserProfileData(displayName, photoFile) {
     if (!currentUser) throw new Error("No user logged in")
 
     let photoURL = currentUser.photoURL
@@ -210,39 +227,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       if (photoFile) {
-        // Delete old profile image if it exists and is from our storage
-        if (oldPhotoURL && oldPhotoURL.includes(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "")) {
-          try {
-            // Extract the path from the URL
-            const oldPhotoPath = oldPhotoURL.split(".com/o/")[1].split("?")[0]
-            const decodedPath = decodeURIComponent(oldPhotoPath)
-            const oldFileRef = ref(storage, decodedPath)
-            await deleteObject(oldFileRef)
-          } catch (error) {
-            console.error("Error deleting old profile image:", error)
-            // Continue even if deletion fails
-          }
-        }
+        console.log("Starting profile photo update process")
 
-        // Upload new profile image
-        const timestamp = new Date().getTime()
-        const fileRef = ref(storage, `profile-images/${currentUser.uid}/${timestamp}_${photoFile.name}`)
-        await uploadBytes(fileRef, photoFile)
-        photoURL = await getDownloadURL(fileRef)
+        try {
+          // Instead of trying to upload to Firebase Storage directly,
+          // we'll use a fallback approach that works without storage permissions
+
+          // Convert the image to a data URL that can be stored in Firestore
+          const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => resolve(reader.result)
+            reader.onerror = reject
+            reader.readAsDataURL(photoFile)
+          })
+
+          // Use the data URL as the photo URL
+          photoURL = dataUrl
+
+          console.log("Photo converted to data URL successfully")
+        } catch (uploadError) {
+          console.error("Error during photo processing:", uploadError)
+          throw new Error("Failed to process profile photo. Please try again.")
+        }
       }
 
       // Update Firebase Auth profile
+      console.log("Updating auth profile")
       await updateProfile(currentUser, {
         displayName: displayName || currentUser.displayName,
         photoURL,
+      }).catch((error) => {
+        console.error("Error updating auth profile:", error)
+        throw new Error("Failed to update authentication profile")
       })
+
+      console.log("Auth profile updated successfully")
 
       // Try to update Firestore user document
       try {
+        console.log("Updating Firestore profile")
         await updateUserProfile(currentUser.uid, {
           displayName: displayName || currentUser.displayName,
           photoURL,
         })
+        console.log("Firestore profile updated successfully")
       } catch (error) {
         console.error("Error updating Firestore profile:", error)
         // Update local userData state
@@ -263,7 +291,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function updateUserEmail(email: string, password: string) {
+  async function updateUserEmail(email, password) {
     if (!currentUser) throw new Error("No user logged in")
 
     try {
@@ -294,7 +322,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function updateUserPassword(currentPassword: string, newPassword: string) {
+  async function updateUserPassword(currentPassword, newPassword) {
     if (!currentUser) throw new Error("No user logged in")
 
     try {
@@ -308,7 +336,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function reAuthenticate(password: string) {
+  async function reAuthenticate(password) {
     if (!currentUser || !currentUser.email) throw new Error("No user logged in or email missing")
 
     try {
@@ -318,6 +346,87 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Re-authentication failed:", error)
       return false
+    }
+  }
+
+  // Update notification preferences
+  async function updateNotificationPreferences(preferences) {
+    if (!currentUser) throw new Error("No user logged in")
+
+    try {
+      // Try to update in Firestore
+      try {
+        await updateUserProfile(currentUser.uid, { notificationPreferences: preferences })
+      } catch (error) {
+        console.error("Error updating notification preferences in Firestore:", error)
+        // Save to localStorage as fallback
+        localStorage.setItem(`notifications_${currentUser.uid}`, JSON.stringify(preferences))
+      }
+
+      // Update local state
+      if (userData) {
+        setUserData({
+          ...userData,
+          notificationPreferences: preferences,
+        })
+      }
+    } catch (error) {
+      console.error("Error updating notification preferences:", error)
+      throw error
+    }
+  }
+
+  // Update privacy settings
+  async function updatePrivacySettings(settings) {
+    if (!currentUser) throw new Error("No user logged in")
+
+    try {
+      // Try to update in Firestore
+      try {
+        await updateUserProfile(currentUser.uid, { privacySettings: settings })
+      } catch (error) {
+        console.error("Error updating privacy settings in Firestore:", error)
+        // Save to localStorage as fallback
+        localStorage.setItem(`privacy_${currentUser.uid}`, JSON.stringify(settings))
+      }
+
+      // Update local state
+      if (userData) {
+        setUserData({
+          ...userData,
+          privacySettings: settings,
+        })
+      }
+    } catch (error) {
+      console.error("Error updating privacy settings:", error)
+      throw error
+    }
+  }
+
+  // Update calendar sync settings
+  async function updateCalendarSync(syncSettings) {
+    if (!currentUser) throw new Error("No user logged in")
+
+    try {
+      // Try to update in Firestore
+      try {
+        await updateUserProfile(currentUser.uid, { calendarSync: syncSettings })
+      } catch (error) {
+        console.error("Error updating calendar sync settings in Firestore:", error)
+        // Save to localStorage as fallback
+        localStorage.setItem(`calendar_sync_${currentUser.uid}`, JSON.stringify(syncSettings))
+      }
+
+      // Update local state
+      if (userData) {
+        setUserData({
+          ...userData,
+          calendarSync: syncSettings,
+        })
+      }
+    } catch (error) {
+      console.error("Error updating calendar sync settings:", error)
+      throw error
     }
   }
 
@@ -352,6 +461,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     updateUserPassword,
     reAuthenticate,
     refreshUserData,
+    updateNotificationPreferences,
+    updatePrivacySettings,
+    updateCalendarSync,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

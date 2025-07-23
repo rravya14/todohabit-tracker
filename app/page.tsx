@@ -127,14 +127,14 @@ export default function Home() {
   // Show loading state or redirect to login
   if (loading || !currentUser || !userData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-violet-50 to-white dark:from-violet-950 dark:to-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-violet-50 to-white dark:from-slate-900 dark:to-slate-800">
         <LoadingSpinner size="lg" />
       </div>
     )
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-violet-50 to-white dark:from-violet-950 dark:to-gray-900">
+    <main className="min-h-screen bg-gradient-to-b from-violet-50 to-white dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto p-4 max-w-4xl">
         <div className="flex justify-between items-center mb-6 pt-4">
           <div className="flex items-center gap-2">
@@ -152,17 +152,17 @@ export default function Home() {
           <p className="text-gray-600 dark:text-gray-300 text-center mb-8">Manage your tasks and build better habits</p>
 
           <Tabs defaultValue="todos" className="w-full">
-            <TabsList className="grid grid-cols-2 mb-8 bg-violet-100 dark:bg-violet-900 p-1 rounded-xl">
+            <TabsList className="grid grid-cols-2 mb-8 bg-violet-100 dark:bg-gray-800 p-1 rounded-xl shadow-sm backdrop-blur-sm">
               <TabsTrigger
                 value="todos"
-                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-violet-700 dark:data-[state=active]:text-violet-300"
+                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-violet-700 dark:data-[state=active]:text-violet-300 data-[state=active]:shadow-sm transition-all duration-200"
               >
                 <ListTodo className="h-4 w-4" />
                 <span>Todo List</span>
               </TabsTrigger>
               <TabsTrigger
                 value="habits"
-                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-violet-700 dark:data-[state=active]:text-violet-300"
+                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-violet-700 dark:data-[state=active]:text-violet-300 data-[state=active]:shadow-sm transition-all duration-200"
               >
                 <CheckCircle2 className="h-4 w-4" />
                 <span>Habit Tracker</span>

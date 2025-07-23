@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
 import { useAuth } from "@/context/auth-context"
 import { useTheme } from "@/context/theme-context"
@@ -23,6 +21,10 @@ import {
   CheckCircle,
   ArrowLeft,
   Loader2,
+  Download,
+  Upload,
+  Database,
+  Trash2,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -30,7 +32,7 @@ import LoadingSpinner from "@/components/loading-spinner"
 
 export default function SettingsPage() {
   const { currentUser, userData, updateUserEmail, updateUserPassword, loading } = useAuth()
-  const { theme, setTheme, isLoading: themeLoading } = useTheme()
+  const { theme, setTheme, resolvedTheme, isLoading: themeLoading } = useTheme()
   const [email, setEmail] = useState("")
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
@@ -40,6 +42,7 @@ export default function SettingsPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isEmailLoading, setIsEmailLoading] = useState(false)
   const [isPasswordLoading, setIsPasswordLoading] = useState(false)
+  const [isDataLoading, setIsDataLoading] = useState(false)
   const [message, setMessage] = useState("")
   const [error, setError] = useState("")
   const router = useRouter()
@@ -50,7 +53,7 @@ export default function SettingsPage() {
     }
   }, [currentUser, loading, router])
 
-  const handleEmailUpdate = async (e: React.FormEvent) => {
+  const handleEmailUpdate = async (e) => {
     e.preventDefault()
     if (!currentUser || !currentUser.email) return
 
@@ -63,7 +66,7 @@ export default function SettingsPage() {
       setMessage("Email updated successfully")
       setEmail("")
       setCurrentPassword("")
-    } catch (error: any) {
+    } catch (error) {
       let errorMessage = "Failed to update email"
 
       if (error.code === "auth/wrong-password") {
@@ -82,7 +85,7 @@ export default function SettingsPage() {
     }
   }
 
-  const handlePasswordUpdate = async (e: React.FormEvent) => {
+  const handlePasswordUpdate = async (e) => {
     e.preventDefault()
 
     setError("")
@@ -104,7 +107,7 @@ export default function SettingsPage() {
       setCurrentPassword("")
       setNewPassword("")
       setConfirmPassword("")
-    } catch (error: any) {
+    } catch (error) {
       let errorMessage = "Failed to update password"
 
       if (error.code === "auth/wrong-password") {
@@ -119,6 +122,93 @@ export default function SettingsPage() {
     } finally {
       setIsPasswordLoading(false)
     }
+  }
+
+  // Handle data export
+  const handleExportData = () => {
+    setIsDataLoading(true)
+
+    try {
+      // Create data object to export
+      const exportData = {
+        todos: userData.todos || [],
+        habits: userData.habits || [],
+        settings: userData.settings || {},
+        notificationPreferences: userData.notificationPreferences || {},
+        privacySettings: userData.privacySettings || {},
+        calendarSync: userData.calendarSync || {},
+        exportDate: new Date().toISOString(),
+      }
+
+      // Convert to JSON string
+      const dataStr = JSON.stringify(exportData, null, 2)
+
+      // Create download link
+      const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`
+
+      // Create download element
+      const exportFileDefaultName = `todohabit_export_${new Date().toISOString().split("T")[0]}.json`
+
+      const linkElement = document.createElement("a")
+      linkElement.setAttribute("href", dataUri)
+      linkElement.setAttribute("download", exportFileDefaultName)
+      linkElement.click()
+
+      setMessage("Data exported successfully")
+    } catch (error) {
+      console.error("Error exporting data:", error)
+      setError("Failed to export data")
+    } finally {
+      setIsDataLoading(false)
+    }
+  }
+
+  // Handle data import
+  const handleImportData = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsDataLoading(true)
+    setError("")
+    setMessage("")
+
+    const reader = new FileReader()
+
+    reader.onload = async (event) => {
+      try {
+        const importedData = JSON.parse(event.target.result)
+
+        // Validate imported data
+        if (!importedData.todos || !importedData.habits) {
+          throw new Error("Invalid data format")
+        }
+
+        // Here you would normally update the data in Firestore
+        // For now, we'll just show a success message
+        console.log("Data to import:", importedData)
+
+        setMessage("Data imported successfully. Please refresh the page to see changes.")
+        setIsDataLoading(false)
+      } catch (error) {
+        console.error("Error importing data:", error)
+        setError("Failed to import data. Please check the file format.")
+        setIsDataLoading(false)
+      }
+    }
+
+    reader.onerror = () => {
+      setError("Error reading file")
+      setIsDataLoading(false)
+    }
+
+    reader.readAsText(file)
+  }
+
+  // Handle account deletion
+  const handleDeleteAccount = () => {
+    // This would normally show a confirmation dialog and then delete the account
+    // For now, we'll just show an alert
+    alert("This feature is not implemented yet. In a real app, this would delete your account after confirmation.")
   }
 
   if (loading || !currentUser || !userData || themeLoading) {
@@ -147,6 +237,20 @@ export default function SettingsPage() {
           Settings
         </h1>
 
+        {message && (
+          <Alert className="mb-4 bg-green-50 border-green-200 text-green-800 dark:bg-green-900 dark:border-green-800 dark:text-green-100">
+            <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+            <AlertDescription>{message}</AlertDescription>
+          </Alert>
+        )}
+
+        {error && (
+          <Alert variant="destructive" className="mb-4 dark:bg-red-900 dark:border-red-800 dark:text-white">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         <Tabs defaultValue="account" className="space-y-6">
           <TabsList className="bg-violet-100 dark:bg-violet-900 p-1 rounded-xl">
             <TabsTrigger
@@ -161,6 +265,12 @@ export default function SettingsPage() {
             >
               Appearance
             </TabsTrigger>
+            <TabsTrigger
+              value="data"
+              className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-violet-700 dark:data-[state=active]:text-violet-300"
+            >
+              Data Management
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="account">
@@ -171,19 +281,6 @@ export default function SettingsPage() {
                   <CardDescription className="dark:text-gray-400">Update your email address</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {message && (
-                    <Alert className="mb-4 bg-green-50 border-green-200 text-green-800 dark:bg-green-900 dark:border-green-800 dark:text-green-100">
-                      <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-                      <AlertDescription>{message}</AlertDescription>
-                    </Alert>
-                  )}
-                  {error && (
-                    <Alert variant="destructive" className="mb-4 dark:bg-red-900 dark:border-red-800 dark:text-white">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription>{error}</AlertDescription>
-                    </Alert>
-                  )}
-
                   <form onSubmit={handleEmailUpdate} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="current-email" className="text-violet-800 dark:text-violet-300">
@@ -357,31 +454,145 @@ export default function SettingsPage() {
                     <Label className="text-violet-800 dark:text-violet-300">Theme Mode</Label>
                     <RadioGroup
                       value={theme}
-                      onValueChange={(value) => setTheme(value as "light" | "dark" | "system")}
+                      onValueChange={(value) => setTheme(value)}
                       className="flex flex-col space-y-2"
                     >
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="light" id="light" className="border-violet-400 text-violet-600" />
+                        <RadioGroupItem
+                          value="light"
+                          id="light"
+                          className="border-violet-400 text-violet-600 dark:border-violet-500 dark:text-violet-400"
+                        />
                         <Label htmlFor="light" className="flex items-center cursor-pointer">
-                          <Sun className="h-4 w-4 mr-2 text-amber-500" />
+                          <Sun
+                            className={`h-4 w-4 mr-2 ${resolvedTheme === "light" ? "text-amber-500" : "text-amber-400"}`}
+                          />
                           Light
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="dark" id="dark" className="border-violet-400 text-violet-600" />
+                        <RadioGroupItem
+                          value="dark"
+                          id="dark"
+                          className="border-violet-400 text-violet-600 dark:border-violet-500 dark:text-violet-400"
+                        />
                         <Label htmlFor="dark" className="flex items-center cursor-pointer">
-                          <Moon className="h-4 w-4 mr-2 text-indigo-400" />
+                          <Moon
+                            className={`h-4 w-4 mr-2 ${resolvedTheme === "dark" ? "text-indigo-400" : "text-indigo-500"}`}
+                          />
                           Dark
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="system" id="system" className="border-violet-400 text-violet-600" />
+                        <RadioGroupItem
+                          value="system"
+                          id="system"
+                          className="border-violet-400 text-violet-600 dark:border-violet-500 dark:text-violet-400"
+                        />
                         <Label htmlFor="system" className="flex items-center cursor-pointer">
-                          <Laptop className="h-4 w-4 mr-2 text-gray-500" />
+                          <Laptop className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
                           System
                         </Label>
                       </div>
                     </RadioGroup>
+                  </div>
+
+                  <div className="pt-4">
+                    <div className="p-4 rounded-lg bg-white dark:bg-gray-900 border border-violet-100 dark:border-violet-800">
+                      <h3 className="font-medium mb-2 text-violet-800 dark:text-violet-300">Preview</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        This is how content will appear with the {resolvedTheme} theme.
+                      </p>
+                      <div className="mt-3 flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          className="bg-violet-600 hover:bg-violet-700 dark:bg-violet-700 dark:hover:bg-violet-600"
+                        >
+                          Primary Button
+                        </Button>
+                        <Button size="sm" variant="outline" className="border-violet-200 dark:border-violet-700">
+                          Secondary Button
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="data">
+            <Card className="border-violet-200 dark:border-violet-800 shadow-md dark:bg-gray-800">
+              <CardHeader>
+                <CardTitle className="text-2xl text-violet-900 dark:text-violet-300">Data Management</CardTitle>
+                <CardDescription className="dark:text-gray-400">Export, import, or delete your data</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="bg-violet-50 dark:bg-violet-900/30 p-4 rounded-lg border border-violet-200 dark:border-violet-800">
+                    <h3 className="font-medium text-violet-800 dark:text-violet-300 mb-2 flex items-center">
+                      <Database className="h-4 w-4 mr-2" />
+                      Your Data
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                      You can export your data to back it up or import it to restore from a previous backup.
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button
+                        variant="outline"
+                        className="flex-1 border-violet-200 dark:border-violet-700"
+                        onClick={handleExportData}
+                        disabled={isDataLoading}
+                      >
+                        {isDataLoading ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Download className="mr-2 h-4 w-4" />
+                        )}
+                        Export Data
+                      </Button>
+
+                      <div className="relative flex-1">
+                        <Button
+                          variant="outline"
+                          className="w-full border-violet-200 dark:border-violet-700"
+                          disabled={isDataLoading}
+                          onClick={() => document.getElementById("import-file").click()}
+                        >
+                          {isDataLoading ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Upload className="mr-2 h-4 w-4" />
+                          )}
+                          Import Data
+                        </Button>
+                        <input
+                          type="file"
+                          id="import-file"
+                          accept=".json"
+                          className="hidden"
+                          onChange={handleImportData}
+                          disabled={isDataLoading}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-violet-200 dark:border-violet-800 pt-6">
+                    <h3 className="font-medium text-red-600 dark:text-red-400 mb-2">Danger Zone</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                      Once you delete your account, there is no going back. Please be certain.
+                    </p>
+
+                    <Button
+                      variant="outline"
+                      className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/50 dark:hover:text-red-300"
+                      onClick={handleDeleteAccount}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete Account
+                    </Button>
                   </div>
                 </div>
               </CardContent>

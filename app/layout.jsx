@@ -1,13 +1,8 @@
-import type React from "react"
 import { ThemeProvider } from "@/context/theme-context"
 import { AuthProvider } from "@/context/auth-context"
 import "./globals.css"
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>

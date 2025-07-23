@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
 import { useAuth } from "@/context/auth-context"
 import { Button } from "@/components/ui/button"
@@ -22,7 +20,7 @@ export default function LoginPage() {
   const { login, googleSignIn } = useAuth()
   const router = useRouter()
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
     setError("")
     setIsLoading(true)
@@ -30,7 +28,7 @@ export default function LoginPage() {
     try {
       await login(email, password)
       router.push("/")
-    } catch (error: any) {
+    } catch (error) {
       let errorMessage = "Failed to log in"
 
       // Handle specific Firebase error codes
@@ -54,7 +52,7 @@ export default function LoginPage() {
 
     try {
       await googleSignIn()
-    } catch (error: any) {
+    } catch (error) {
       setError(error.message || "Failed to sign in with Google")
       setIsLoading(false)
     }
@@ -162,7 +160,7 @@ export default function LoginPage() {
             <Button
               type="button"
               variant="outline"
-              className="w-full border-violet-200 dark:border-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900 text-violet-800 dark:text-violet-300"
+              className="w-full border-violet-200 dark:border-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900 text-violet-800 dark:text-violet-300 bg-transparent"
               onClick={handleGoogleSignIn}
               disabled={isLoading}
             >

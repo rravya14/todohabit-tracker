@@ -269,8 +269,8 @@ export default function HabitTracker({
             exit={{ opacity: 0, y: -20 }}
             className="mb-6"
           >
-            <h3 className="text-xl font-bold mb-3 flex items-center text-amber-700">
-              <Award className="h-5 w-5 mr-2 text-amber-500" />
+            <h3 className="text-xl font-bold mb-3 flex items-center text-amber-700 dark:text-amber-400">
+              <Award className="h-5 w-5 mr-2 text-amber-500 dark:text-amber-400" />
               Achievements
             </h3>
             <div className="space-y-2">
@@ -282,23 +282,23 @@ export default function HabitTracker({
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200 shadow-sm">
+                  <Card className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border-amber-200 dark:border-amber-800 shadow-sm rounded-xl backdrop-blur-sm">
                     <CardContent className="p-4">
                       <div className="flex justify-between items-start">
                         <div className="flex items-start gap-3">
-                          <div className="mt-1 p-1.5 bg-amber-100 rounded-full">
-                            <Award className="h-5 w-5 text-amber-500" />
+                          <div className="mt-1 p-1.5 bg-amber-100 dark:bg-amber-900/30 rounded-full">
+                            <Award className="h-5 w-5 text-amber-500 dark:text-amber-400" />
                           </div>
                           <div>
-                            <h4 className="font-bold text-amber-800">{achievement.title}</h4>
-                            <p className="text-sm text-amber-700">{achievement.description}</p>
+                            <h4 className="font-bold text-amber-800 dark:text-amber-300">{achievement.title}</h4>
+                            <p className="text-sm text-amber-700 dark:text-amber-400">{achievement.description}</p>
                           </div>
                         </div>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => dismissAchievement(achievement.id)}
-                          className="text-amber-700 hover:bg-amber-100 hover:text-amber-800"
+                          className="text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 hover:text-amber-800 dark:hover:text-amber-300 rounded-lg"
                         >
                           <X className="h-4 w-4" />
                         </Button>
@@ -313,12 +313,12 @@ export default function HabitTracker({
       </AnimatePresence>
 
       <div className="flex flex-col space-y-4">
-        <h2 className="text-2xl font-bold text-violet-900 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-violet-900 dark:text-violet-300 flex items-center gap-2">
           <CheckCircle2 className="h-6 w-6" />
           Habits
         </h2>
 
-        <Card className="border-violet-200 shadow-sm">
+        <Card className="border-violet-200 dark:border-gray-700 shadow-sm rounded-xl backdrop-blur-sm bg-white/80 dark:bg-gray-800/80">
           <CardContent className="p-6">
             <div className="flex flex-col space-y-4">
               <div className="relative">
@@ -327,20 +327,20 @@ export default function HabitTracker({
                   placeholder="Add a new habit..."
                   value={newHabit}
                   onChange={(e) => setNewHabit(e.target.value)}
-                  className="pl-10 border-violet-200 focus:border-violet-400 focus:ring-violet-400"
+                  className="pl-10 border-violet-200 dark:border-gray-600 focus:border-violet-400 dark:focus:border-violet-500 focus:ring-violet-400 dark:focus:ring-violet-500 rounded-lg bg-white dark:bg-gray-800"
                 />
-                <Plus className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-violet-400" />
+                <Plus className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-violet-400 dark:text-violet-500" />
               </div>
 
               <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                 <Select value={frequency} onValueChange={(value: "daily" | "weekly" | "custom") => setFrequency(value)}>
-                  <SelectTrigger className="w-full sm:w-[150px] border-violet-200">
+                  <SelectTrigger className="w-full sm:w-[150px] border-violet-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
                     <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-violet-500" />
+                      <Calendar className="h-4 w-4 text-violet-500 dark:text-violet-400" />
                       <SelectValue placeholder="Frequency" />
                     </div>
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-lg">
                     <SelectItem value="daily">Daily</SelectItem>
                     <SelectItem value="weekly">Weekly</SelectItem>
                     <SelectItem value="custom">Custom</SelectItem>
@@ -353,10 +353,10 @@ export default function HabitTracker({
                       <Badge
                         key={day}
                         variant={customDays.includes(day) ? "default" : "outline"}
-                        className={`cursor-pointer ${
+                        className={`cursor-pointer rounded-md ${
                           customDays.includes(day)
-                            ? "bg-violet-100 text-violet-800 hover:bg-violet-200"
-                            : "border-violet-200 hover:bg-violet-50"
+                            ? "bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-300 hover:bg-violet-200 dark:hover:bg-violet-900/50"
+                            : "border-violet-200 dark:border-gray-600 hover:bg-violet-50 dark:hover:bg-gray-700"
                         }`}
                         onClick={() => toggleCustomDay(day)}
                       >
@@ -368,18 +368,24 @@ export default function HabitTracker({
 
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="w-full sm:w-auto border-violet-200 hover:bg-violet-50">
-                      <Bell className="h-4 w-4 mr-2 text-violet-500" />
+                    <Button
+                      variant="outline"
+                      className="w-full sm:w-auto border-violet-200 dark:border-gray-600 hover:bg-violet-50 dark:hover:bg-gray-700 rounded-lg bg-transparent"
+                    >
+                      <Bell className="h-4 w-4 mr-2 text-violet-500 dark:text-violet-400" />
                       Reminder
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="border-violet-200">
+                  <DialogContent className="border-violet-200 dark:border-gray-700 rounded-xl">
                     <DialogHeader>
-                      <DialogTitle className="text-violet-900">Set Reminder</DialogTitle>
+                      <DialogTitle className="text-violet-900 dark:text-violet-300">Set Reminder</DialogTitle>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="habit-reminder-date" className="text-right text-violet-700">
+                        <Label
+                          htmlFor="habit-reminder-date"
+                          className="text-right text-violet-700 dark:text-violet-400"
+                        >
                           Date
                         </Label>
                         <Input
@@ -387,12 +393,15 @@ export default function HabitTracker({
                           type="date"
                           value={reminderDate}
                           onChange={(e) => setReminderDate(e.target.value)}
-                          className="col-span-3 border-violet-200"
+                          className="col-span-3 border-violet-200 dark:border-gray-600 rounded-lg"
                           min={new Date().toISOString().split("T")[0]}
                         />
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="habit-reminder-time" className="text-right text-violet-700">
+                        <Label
+                          htmlFor="habit-reminder-time"
+                          className="text-right text-violet-700 dark:text-violet-400"
+                        >
                           Time
                         </Label>
                         <Input
@@ -400,7 +409,7 @@ export default function HabitTracker({
                           type="time"
                           value={reminderTime}
                           onChange={(e) => setReminderTime(e.target.value)}
-                          className="col-span-3 border-violet-200"
+                          className="col-span-3 border-violet-200 dark:border-gray-600 rounded-lg"
                         />
                       </div>
                     </div>
@@ -409,7 +418,7 @@ export default function HabitTracker({
 
                 <Button
                   onClick={addHabit}
-                  className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-700 hover:to-fuchsia-600"
+                  className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-700 hover:to-fuchsia-600 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Habit
@@ -421,10 +430,10 @@ export default function HabitTracker({
       </div>
 
       {habits.length === 0 ? (
-        <div className="text-center py-12 text-gray-500 bg-white rounded-lg border border-violet-100 shadow-sm">
+        <div className="text-center py-12 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-violet-100 dark:border-gray-700 shadow-sm backdrop-blur-sm">
           <div className="flex justify-center mb-4">
-            <div className="p-4 bg-violet-50 rounded-full">
-              <CheckCircle2 className="h-8 w-8 text-violet-400" />
+            <div className="p-4 bg-violet-50 dark:bg-violet-900/30 rounded-full">
+              <CheckCircle2 className="h-8 w-8 text-violet-400 dark:text-violet-500" />
             </div>
           </div>
           <p>No habits found. Add a new habit to get started!</p>
@@ -438,7 +447,7 @@ export default function HabitTracker({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <Card className="bg-white border-violet-100 shadow-sm hover:shadow transition-all duration-200">
+              <Card className="bg-white dark:bg-gray-800 border-violet-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl backdrop-blur-sm">
                 <CardContent className="p-4">
                   {editingHabit && editingHabit.id === habit.id ? (
                     <div className="space-y-3">
@@ -446,7 +455,7 @@ export default function HabitTracker({
                         type="text"
                         value={editingHabit.name}
                         onChange={(e) => setEditingHabit({ ...editingHabit, name: e.target.value })}
-                        className="w-full border-violet-200"
+                        className="w-full border-violet-200 dark:border-gray-600 rounded-lg"
                       />
 
                       <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
@@ -454,10 +463,10 @@ export default function HabitTracker({
                           value={frequency}
                           onValueChange={(value: "daily" | "weekly" | "custom") => setFrequency(value)}
                         >
-                          <SelectTrigger className="w-full sm:w-[150px] border-violet-200">
+                          <SelectTrigger className="w-full sm:w-[150px] border-violet-200 dark:border-gray-600 rounded-lg">
                             <SelectValue placeholder="Frequency" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="rounded-lg">
                             <SelectItem value="daily">Daily</SelectItem>
                             <SelectItem value="weekly">Weekly</SelectItem>
                             <SelectItem value="custom">Custom</SelectItem>
@@ -470,10 +479,10 @@ export default function HabitTracker({
                               <Badge
                                 key={day}
                                 variant={customDays.includes(day) ? "default" : "outline"}
-                                className={`cursor-pointer ${
+                                className={`cursor-pointer rounded-md ${
                                   customDays.includes(day)
-                                    ? "bg-violet-100 text-violet-800 hover:bg-violet-200"
-                                    : "border-violet-200 hover:bg-violet-50"
+                                    ? "bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-300 hover:bg-violet-200 dark:hover:bg-violet-900/50"
+                                    : "border-violet-200 dark:border-gray-600 hover:bg-violet-50 dark:hover:bg-gray-700"
                                 }`}
                                 onClick={() => toggleCustomDay(day)}
                               >
@@ -485,18 +494,24 @@ export default function HabitTracker({
 
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" className="border-violet-200 hover:bg-violet-50">
-                              <Bell className="h-4 w-4 mr-2 text-violet-500" />
+                            <Button
+                              variant="outline"
+                              className="border-violet-200 dark:border-gray-600 hover:bg-violet-50 dark:hover:bg-gray-700 rounded-lg bg-transparent"
+                            >
+                              <Bell className="h-4 w-4 mr-2 text-violet-500 dark:text-violet-400" />
                               {habit.reminder ? "Change Reminder" : "Add Reminder"}
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="border-violet-200">
+                          <DialogContent className="border-violet-200 dark:border-gray-700 rounded-xl">
                             <DialogHeader>
-                              <DialogTitle className="text-violet-900">Set Reminder</DialogTitle>
+                              <DialogTitle className="text-violet-900 dark:text-violet-300">Set Reminder</DialogTitle>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="edit-habit-reminder-date" className="text-right text-violet-700">
+                                <Label
+                                  htmlFor="edit-habit-reminder-date"
+                                  className="text-right text-violet-700 dark:text-violet-400"
+                                >
                                   Date
                                 </Label>
                                 <Input
@@ -504,12 +519,15 @@ export default function HabitTracker({
                                   type="date"
                                   value={reminderDate}
                                   onChange={(e) => setReminderDate(e.target.value)}
-                                  className="col-span-3 border-violet-200"
+                                  className="col-span-3 border-violet-200 dark:border-gray-600 rounded-lg"
                                   min={new Date().toISOString().split("T")[0]}
                                 />
                               </div>
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="edit-habit-reminder-time" className="text-right text-violet-700">
+                                <Label
+                                  htmlFor="edit-habit-reminder-time"
+                                  className="text-right text-violet-700 dark:text-violet-400"
+                                >
                                   Time
                                 </Label>
                                 <Input
@@ -517,7 +535,7 @@ export default function HabitTracker({
                                   type="time"
                                   value={reminderTime}
                                   onChange={(e) => setReminderTime(e.target.value)}
-                                  className="col-span-3 border-violet-200"
+                                  className="col-span-3 border-violet-200 dark:border-gray-600 rounded-lg"
                                 />
                               </div>
                             </div>
@@ -528,7 +546,7 @@ export default function HabitTracker({
                           onClick={updateHabit}
                           variant="default"
                           size="sm"
-                          className="bg-violet-600 hover:bg-violet-700"
+                          className="bg-violet-600 hover:bg-violet-700 rounded-lg shadow-md"
                         >
                           <Check className="h-4 w-4 mr-2" />
                           Save
@@ -538,7 +556,7 @@ export default function HabitTracker({
                           onClick={cancelEditing}
                           variant="outline"
                           size="sm"
-                          className="border-violet-200 hover:bg-violet-50"
+                          className="border-violet-200 dark:border-gray-600 hover:bg-violet-50 dark:hover:bg-gray-700 rounded-lg bg-transparent"
                         >
                           <X className="h-4 w-4 mr-2" />
                           Cancel
@@ -552,16 +570,22 @@ export default function HabitTracker({
                           id={`habit-${habit.id}`}
                           checked={isCompletedToday(habit)}
                           onCheckedChange={() => toggleHabitCompletion(habit)}
-                          className="mt-1 border-violet-300 data-[state=checked]:bg-violet-600 data-[state=checked]:border-violet-600"
+                          className="mt-1 border-violet-300 dark:border-gray-600 data-[state=checked]:bg-violet-600 data-[state=checked]:border-violet-600 rounded"
                           disabled={!shouldCompleteToday(habit)}
                         />
                         <div className="space-y-2">
                           <div>
-                            <label htmlFor={`habit-${habit.id}`} className="font-medium text-gray-800">
+                            <label
+                              htmlFor={`habit-${habit.id}`}
+                              className="font-medium text-gray-800 dark:text-gray-200"
+                            >
                               {habit.name}
                             </label>
                             <div className="flex items-center space-x-2 mt-1">
-                              <Badge variant="outline" className="border-violet-200 text-violet-700 bg-violet-50">
+                              <Badge
+                                variant="outline"
+                                className="border-violet-200 dark:border-gray-600 text-violet-700 dark:text-violet-300 bg-violet-50 dark:bg-violet-900/30 rounded-md"
+                              >
                                 {habit.frequency === "daily" && "Daily"}
                                 {habit.frequency === "weekly" && "Weekly"}
                                 {habit.frequency === "custom" && "Custom"}
@@ -573,7 +597,7 @@ export default function HabitTracker({
                                     <Badge
                                       key={day}
                                       variant="secondary"
-                                      className="text-xs bg-violet-100 text-violet-800"
+                                      className="text-xs bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-300 rounded-md"
                                     >
                                       {day.substring(0, 3)}
                                     </Badge>
@@ -582,8 +606,8 @@ export default function HabitTracker({
                               )}
 
                               {habit.reminder && (
-                                <div className="flex items-center text-xs text-gray-500">
-                                  <Bell className="h-3 w-3 mr-1 text-violet-400" />
+                                <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                  <Bell className="h-3 w-3 mr-1 text-violet-400 dark:text-violet-500" />
                                   {new Date(habit.reminder).toLocaleString()}
                                 </div>
                               )}
@@ -592,15 +616,17 @@ export default function HabitTracker({
 
                           <div className="space-y-1">
                             <div className="flex items-center space-x-2">
-                              <div className="p-1 bg-orange-50 rounded-full">
-                                <Flame className="h-3 w-3 text-orange-500" />
+                              <div className="p-1 bg-orange-50 dark:bg-orange-900/30 rounded-full">
+                                <Flame className="h-3 w-3 text-orange-500 dark:text-orange-400" />
                               </div>
-                              <span className="text-sm font-medium text-orange-700">Streak: {habit.streak} days</span>
+                              <span className="text-sm font-medium text-orange-700 dark:text-orange-400">
+                                Streak: {habit.streak} days
+                              </span>
                             </div>
                             <Progress
                               value={Math.min(habit.streak * 10, 100)}
-                              className="h-2 bg-orange-100"
-                              indicatorClassName="bg-gradient-to-r from-orange-500 to-red-500"
+                              className="h-2 bg-orange-100 dark:bg-orange-900/30 rounded-full"
+                              indicatorClassName="bg-gradient-to-r from-orange-500 to-red-500 dark:from-orange-400 dark:to-red-400 rounded-full"
                             />
                           </div>
                         </div>
@@ -611,17 +637,17 @@ export default function HabitTracker({
                           variant="ghost"
                           size="sm"
                           onClick={() => startEditing(habit)}
-                          className="hover:bg-violet-50 hover:text-violet-700"
+                          className="hover:bg-violet-50 dark:hover:bg-gray-700 hover:text-violet-700 dark:hover:text-violet-400 rounded-lg"
                         >
-                          <Edit className="h-4 w-4 text-violet-500" />
+                          <Edit className="h-4 w-4 text-violet-500 dark:text-violet-400" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => deleteHabit(habit.id)}
-                          className="hover:bg-red-50 hover:text-red-700"
+                          className="hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-400 rounded-lg"
                         >
-                          <Trash2 className="h-4 w-4 text-red-500" />
+                          <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" />
                         </Button>
                       </div>
                     </div>
